@@ -73,12 +73,13 @@ class JoltClient:
         return self._connected
     
     def _send(self, json_str: str):
+        print(f"[SENT] {json_str.rstrip()}")
         if not self._connected or not self._socket:
             raise JoltException("Not connected")
-        
+    
         with self._write_lock:
             try:
-                message = (json_str + "\n").encode('utf-8')
+                message = json_str.encode('utf-8')
                 self._socket.sendall(message)
             except Exception as e:
                 self._connected = False
@@ -115,9 +116,9 @@ class JoltClient:
                 self._handler.on_disconnected(None)
     
     def _handle_line(self, raw_line: str):
+        print(f"[RECEIVED] {raw_line}")
         try:
-            data = JoltResponseParser.parse(raw_line)
-            
+            data = JoltResponseParser.parse(raw_line)    
             if data.get("ok") is True:
                 self._handler.on_ok(raw_line)
             
