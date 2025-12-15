@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="jolt-python-api",
+    name="Jolt Python API",
     version="1.0.1",
     author="DevArqf",
     author_email="devarqf@gmail.com",
