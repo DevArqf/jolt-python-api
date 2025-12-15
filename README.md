@@ -1,3 +1,7 @@
+<img width="1920" height="1071" alt="image" src="https://github.com/user-attachments/assets/56d00786-a546-4ea7-a183-68dd3fdf755b" />
+
+---
+
 A fast, lightweight Python client for the **Jolt** in-memory messaging broker.
 
 This is a Python port of the [jolt-java-api](https://github.com/Jolt-Database/jolt-java-api), providing identical functionality with a Pythonic interface.
