@@ -1,5 +1,3 @@
-# jolt-python-api
-
 A fast, lightweight Python client for the **Jolt** in-memory messaging broker.
 
 This is a Python port of the [jolt-java-api](https://github.com/Jolt-Database/jolt-java-api), providing identical functionality with a Pythonic interface.
@@ -29,12 +27,12 @@ This is a Python port of the [jolt-java-api](https://github.com/Jolt-Database/jo
 ### From source:
 
 ```bash
-git clone https://github.com/yourusername/jolt-python-api.git
+git clone https://github.com/DevArqf/jolt-python-api.git
 cd jolt-python-api
 pip install -e .
 ```
 
-### Using pip (once published to PyPI):
+### Using pip:
 
 ```bash
 pip install jolt-python-api
