@@ -24,7 +24,9 @@ class JoltClient:
         
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._socket.settimeout(10.0)
             self._socket.connect((self._config.get_host(), self._config.get_port()))
+            self._socket.settimeout(None)
             self._connected = True
             self._running = True
             
@@ -61,26 +63,30 @@ class JoltClient:
         
         if self._socket:
             try:
+                self._socket.shutdown(socket.SHUT_RDWR)
+            except:
+                pass
+            try:
                 self._socket.close()
             except:
                 pass
             self._socket = None
         
         if self._reader_thread and self._reader_thread.is_alive():
-            self._reader_thread.join(timeout=1.0)
+            self._reader_thread.join(timeout=2.0)
     
     def is_connected(self) -> bool:
         return self._connected
     
     def _send(self, json_str: str):
-        print(f"[SENT] {json_str.rstrip()}")
         if not self._connected or not self._socket:
             raise JoltException("Not connected")
-    
+        
         with self._write_lock:
             try:
                 message = json_str.encode('utf-8')
                 self._socket.sendall(message)
+                print(f"[SENT] {json_str.rstrip()}")
             except Exception as e:
                 self._connected = False
                 raise JoltException(f"Failed to send: {e}")
@@ -91,22 +97,27 @@ class JoltClient:
         try:
             while self._running and self._connected:
                 try:
-                    chunk = self._socket.recv(4096).decode('utf-8')
+                    chunk = self._socket.recv(4096)
                     
                     if not chunk:
                         break
                     
-                    buffer += chunk
+                    chunk_str = chunk.decode('utf-8')
+                    buffer += chunk_str
                     
                     while '\n' in buffer:
                         line, buffer = buffer.split('\n', 1)
                         line = line.strip()
                         
                         if line:
+                            print(f"[RECEIVED] {line}")
                             self._handle_line(line)
                 
+                except socket.timeout:
+                    continue
                 except Exception as e:
                     if self._running:
+                        print(f"[ERROR] Read loop error: {e}")
                         self._handler.on_disconnected(e)
                     break
         
@@ -116,9 +127,9 @@ class JoltClient:
                 self._handler.on_disconnected(None)
     
     def _handle_line(self, raw_line: str):
-        print(f"[RECEIVED] {raw_line}")
         try:
-            data = JoltResponseParser.parse(raw_line)    
+            data = JoltResponseParser.parse(raw_line)
+            
             if data.get("ok") is True:
                 self._handler.on_ok(raw_line)
             
@@ -131,7 +142,8 @@ class JoltClient:
                 self._handler.on_topic_message(msg, raw_line)
             
             else:
-                pass
+                print(f"[WARNING] Unknown response format: {raw_line}")
         
         except Exception as e:
-            pass
+            print(f"[ERROR] Failed to handle line: {e}")
+            print(f"[ERROR] Line was: {raw_line}")

@@ -48,4 +48,18 @@ def test_request_is_valid_json():
     ]
     
     for request in requests:
-        json.loads(request)
+        data = json.loads(request)
+        assert "cmd" in data
+
+def test_requests_end_with_newline():
+    """Verify all requests end with newline for NDJSON protocol"""
+    requests = [
+        JoltRequestBuilder.auth("user", "pass"),
+        JoltRequestBuilder.subscribe("topic"),
+        JoltRequestBuilder.unsubscribe("topic"),
+        JoltRequestBuilder.publish("topic", "data"),
+        JoltRequestBuilder.ping()
+    ]
+    
+    for request in requests:
+        assert request.endswith('\n'), f"Request should end with newline: {request}"
