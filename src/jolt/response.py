@@ -2,13 +2,35 @@ import json
 from typing import Dict, Any
 from .exceptions import JoltException
 
-class JoltErrorResponse:
+class JoltResponse:
+    def __init__(self, raw_data: Dict[str, Any]):
+        self._raw_data = raw_data
     
-    def __init__(self, error: str):
-        self._error = error
+    def get_raw(self) -> Dict[str, Any]:
+        return self._raw_data
+
+
+class JoltOkResponse(JoltResponse):
+    def __init__(self, raw_data: Dict[str, Any]):
+        super().__init__(raw_data)
+    
+    def is_ok(self) -> bool:
+        return self._raw_data.get("ok", False)
+    
+    def __str__(self) -> str:
+        return f"JoltOkResponse(ok={self.is_ok()})"
+
+
+class JoltErrorResponse(JoltResponse):
+    def __init__(self, raw_data: Dict[str, Any]):
+        super().__init__(raw_data)
+        self._error = raw_data.get("error", "Unknown error")
     
     def get_error(self) -> str:
         return self._error
+    
+    def is_ok(self) -> bool:
+        return False
     
     def __str__(self) -> str:
         return f"JoltErrorResponse(error={self._error})"
@@ -17,11 +39,11 @@ class JoltErrorResponse:
         return self.__str__()
 
 
-class JoltTopicMessage:
-    
-    def __init__(self, topic: str, data: str):
-        self._topic = topic
-        self._data = data
+class JoltTopicMessage(JoltResponse):
+    def __init__(self, raw_data: Dict[str, Any]):
+        super().__init__(raw_data)
+        self._topic = raw_data.get("topic", "")
+        self._data = raw_data.get("data", "")
     
     def get_topic(self) -> str:
         return self._topic
@@ -46,12 +68,24 @@ class JoltResponseParser:
             raise JoltException(f"Failed to parse JSON: {e}")
     
     @staticmethod
+    def parse_response(raw_line: str) -> JoltResponse:
+        data = JoltResponseParser.parse(raw_line)
+        
+        if "topic" in data and "data" in data:
+            return JoltTopicMessage(data)
+        
+        if "ok" in data and data["ok"] is False:
+            return JoltErrorResponse(data)
+        
+        if "ok" in data and data["ok"] is True:
+            return JoltOkResponse(data)
+        
+        raise JoltException(f"Unknown response format: {raw_line}")
+    
+    @staticmethod
     def parse_error_response(data: Dict[str, Any]) -> JoltErrorResponse:
-        error_msg = data.get("error", "Unknown error")
-        return JoltErrorResponse(error_msg)
+        return JoltErrorResponse(data)
     
     @staticmethod
     def parse_topic_message(data: Dict[str, Any]) -> JoltTopicMessage:
-        topic = data.get("topic", "")
-        msg_data = data.get("data", "")
-        return JoltTopicMessage(topic, msg_data)
+        return JoltTopicMessage(data)

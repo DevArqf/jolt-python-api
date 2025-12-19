@@ -4,7 +4,7 @@ from typing import Optional
 from .config import JoltConfig
 from .handler import JoltMessageHandler
 from .request import JoltRequestBuilder
-from .response import JoltResponseParser
+from .response import JoltResponseParser, JoltOkResponse, JoltErrorResponse, JoltTopicMessage
 from .exceptions import JoltException
 
 class JoltClient:
@@ -86,7 +86,8 @@ class JoltClient:
             try:
                 message = json_str.encode('utf-8')
                 self._socket.sendall(message)
-                print(f"[SENT] {json_str.rstrip()}")
+                # Debug logging (optional)
+                # print(f"[SENT] {json_str.rstrip()}")
             except Exception as e:
                 self._connected = False
                 raise JoltException(f"Failed to send: {e}")
@@ -110,14 +111,14 @@ class JoltClient:
                         line = line.strip()
                         
                         if line:
-                            print(f"[RECEIVED] {line}")
+                            # Debug logging (optional)
+                            # print(f"[RECEIVED] {line}")
                             self._handle_line(line)
                 
                 except socket.timeout:
                     continue
                 except Exception as e:
                     if self._running:
-                        print(f"[ERROR] Read loop error: {e}")
                         self._handler.on_disconnected(e)
                     break
         
@@ -128,22 +129,16 @@ class JoltClient:
     
     def _handle_line(self, raw_line: str):
         try:
-            data = JoltResponseParser.parse(raw_line)
+            response = JoltResponseParser.parse_response(raw_line)
             
-            if data.get("ok") is True:
+            if isinstance(response, JoltOkResponse):
                 self._handler.on_ok(raw_line)
-            
-            elif "error" in data:
-                error = JoltResponseParser.parse_error_response(data)
-                self._handler.on_error(error, raw_line)
-            
-            elif "topic" in data and "data" in data:
-                msg = JoltResponseParser.parse_topic_message(data)
-                self._handler.on_topic_message(msg, raw_line)
-            
+            elif isinstance(response, JoltErrorResponse):
+                self._handler.on_error(response, raw_line)
+            elif isinstance(response, JoltTopicMessage):
+                self._handler.on_topic_message(response, raw_line)
             else:
-                print(f"[WARNING] Unknown response format: {raw_line}")
+                pass
         
         except Exception as e:
-            print(f"[ERROR] Failed to handle line: {e}")
-            print(f"[ERROR] Line was: {raw_line}")
+            pass
