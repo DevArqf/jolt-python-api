@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1920" height="1071" alt="image" src="https://github.com/DevArqf/jolt-python-api/blob/main/Jolt%20Logo.png" />
+<img width="1920" height="1071" alt="image" src="https://github.com/DevArqf/jolt-python-api/blob/f92d146c11c3afa7844d4384f1abbdb3bc99d34c/Jolt%20Logo.png" />
 
 ---
 
