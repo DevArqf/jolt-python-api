@@ -16,13 +16,13 @@ def test_protocol(host='127.0.0.1', port=8080):
         
         tests = [
             ("Test 1: op=ping", {"op": "ping"}),
-            ("Test 2: cmd=ping", {"cmd": "ping"}),
+            ("Test 2: command=ping", {"command": "ping"}),
             ("Test 3: command=ping", {"command": "ping"}),
             ("Test 4: action=ping", {"action": "ping"}),
             ("Test 5: op=sub with topic", {"op": "sub", "topic": "test"}),
-            ("Test 6: cmd=sub with topic", {"cmd": "sub", "topic": "test"}),
+            ("Test 6: command=sub with topic", {"command": "sub", "topic": "test"}),
             ("Test 7: op=subscribe with topic", {"op": "subscribe", "topic": "test"}),
-            ("Test 8: cmd=subscribe with topic", {"cmd": "subscribe", "topic": "test"}),
+            ("Test 8: command=subscribe with topic", {"command": "subscribe", "topic": "test"}),
         ]
         
         for test_name, data in tests:
