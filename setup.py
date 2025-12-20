@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="Jolt-Python-API",
-    version="2.3.1",
+    version="2.3.2",
     author="DevArqf",
     author_email="devarqf@gmail.com",
     description="A Python client for the Jolt in-memory messaging broker",
