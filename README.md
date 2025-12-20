@@ -20,11 +20,11 @@ The Jolt broker uses NDJSON (newline-delimited JSON) over TCP:
 
 ### Commands (Client → Broker)
 ```json
-{"cmd": "auth", "user": "username", "pass": "password"}
-{"cmd": "sub", "topic": "channel.name"}
-{"cmd": "unsub", "topic": "channel.name"}
-{"cmd": "pub", "topic": "channel.name", "data": "message"}
-{"cmd": "ping"}
+{"op": "auth", "user": "username", "pass": "password"}
+{"op": "sub", "topic": "channel.name"}
+{"op": "unsub", "topic": "channel.name"}
+{"op": "pub", "topic": "channel.name", "data": "message"}
+{"op": "ping"}
 ```
 
 ### Responses (Broker → Client)
@@ -253,7 +253,7 @@ This Python API is designed to work with the **actual Jolt broker**, not the jol
 
 | Feature | This API | Java API Assumption |
 |---------|----------|---------------------|
-| Command key | `"cmd"` | `"op"` |
+| Command key | `"op"` | `"op"` |
 | Subscribe | `"sub"` | `"subscribe"` |
 | Unsubscribe | `"unsub"` | `"unsubscribe"` |
 | Publish | `"pub"` | `"publish"` |

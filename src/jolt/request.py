@@ -5,7 +5,7 @@ class JoltRequestBuilder:
     @staticmethod
     def auth(username: str, password: str) -> str:
         request = {
-            "cmd": "auth",
+            "op": "auth",
             "user": username,
             "pass": password
         }
@@ -14,7 +14,7 @@ class JoltRequestBuilder:
     @staticmethod
     def subscribe(topic: str) -> str:
         request = {
-            "cmd": "sub",
+            "op": "sub",
             "topic": topic
         }
         return json.dumps(request) + "\n"
@@ -22,7 +22,7 @@ class JoltRequestBuilder:
     @staticmethod
     def unsubscribe(topic: str) -> str:
         request = {
-            "cmd": "unsub",
+            "op": "unsub",
             "topic": topic
         }
         return json.dumps(request) + "\n"
@@ -30,7 +30,7 @@ class JoltRequestBuilder:
     @staticmethod
     def publish(topic: str, data: str) -> str:
         request = {
-            "cmd": "pub",
+            "op": "pub",
             "topic": topic,
             "data": data
         }
@@ -38,5 +38,5 @@ class JoltRequestBuilder:
         
     @staticmethod
     def ping() -> str:
-        request = {"cmd": "ping"}
+        request = {"op": "ping"}
         return json.dumps(request) + "\n"
