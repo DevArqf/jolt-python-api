@@ -2,12 +2,12 @@
 
 <img width="1920" height="1071" alt="image" src="https://github.com/DevArqf/jolt-python-api/blob/f92d146c11c3afa7844d4384f1abbdb3bc99d34c/Jolt%20Logo.png?raw=true" alt="./Jolt Logo.png"/>
 
+---
+
 [![PyPI version](https://badge.fury.io/py/Jolt-Python-API.svg)](https://pypi.org/project/Jolt-Python-API/) 
 [![PyPI downloads](https://img.shields.io/pypi/dm/Jolt-Python-API.svg)](https://pypi.org/project/Jolt-Python-API/)
 
 </div>
-
----
 
 A fast, lightweight Python client for the [Jolt](https://github.com/Jolt-Database/Jolt) in-memory messaging broker.
 
