@@ -11,7 +11,7 @@ setup(
     description="A Python client for the Jolt in-memory messaging broker",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/DevArqf/jolt-python-api",
+    url="https://github.com/Jolt-Database/jolt-python-api",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[

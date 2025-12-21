@@ -45,7 +45,7 @@ pip install jolt-python-api
 From source:
 
 ```bash
-git clone https://github.com/DevArqf/jolt-python-api.git
+git clone https://github.com/Jolt-Database/jolt-python-api.git
 cd jolt-python-api
 pip install -e .
 ```
